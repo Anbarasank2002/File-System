@@ -1,33 +1,35 @@
 import express from "express";
-import fs, { readFileSync } from "fs";
+import fs from "fs";
 import { format } from "date-fns";
-import path from "path";
+import { log } from "console";
 
 const app = express();
-const PORT = 8000;
+const PORT = 4000;
 
 app.get("/", (req, res) => {
-  let today = format(new Date(), "dd-mm-yyyy-HH-mm-ss");
-  const filePath = `TimeStamp/${today}.txt`;
-  fs.writeFileSync(filePath, `${today}`, "utf8");
-  let data = readFileSync(filePath, "utf8");
-  res.status(200).send(data);
-});
-app.get("/getTextFiles", (req, res) => {
-  const folderPath = "TimeStamp";
-
-  fs.readdir(folderPath, (err, files) => {
-    if (err) {
-      console.log(err);
-      res
-        .status(500)
-        .send("An error occured while listing the files from directory");
-    } else {
-      const textFiles = files.filter((file) => path.extname(file) === ".txt");
-      res.status(200).json(textFiles);
-    }
+  res.status(200).json({
+    Message:
+      "Hai! You can able to view the TimeStamp with the endpoint of write and read",
   });
 });
+
+app.get("/write", (req, res) => {
+  let today = format(new Date(), "dd-mm-yyyy-HH-mm-ss");
+  console.log(("today", today));
+  const filePath = `TimeStamp/${today}.txt`;
+  fs.writeFileSync(filePath, `${today}`, "utf8");
+  let data = fs.readFileSync(filePath, "utf8");
+  res.status(200).send(data);
+});
+
+app.get("/read", (req, res) => {
+  let today = format(new Date(), "dd-mm-yyyy-hh-mm-ss");
+  const filePath = `TimeStamp/ ${today}.txt`;
+  fs.writeFileSync(filePath, `${today}`, "utf8");
+  let dataTime = fs.readFileSync(filePath, "utf8");
+  res.status(200).send(dataTime);
+});
+
 app.listen(PORT, () => {
-  console.log(`Server listening at http://localhost:${PORT}`);
-}); //running status
+  console.log(`App is running in the port ${PORT}`);
+});
